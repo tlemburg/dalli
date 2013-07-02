@@ -13,7 +13,7 @@ module Dalli
     def cas(key, ttl = nil, options = nil, &block)
       ttl ||= @options[:expires_in].to_i
       value = get(key)
-      if value
+      if !value.nil?
         newvalue = block.call(value)
         set(key, newvalue, ttl, options)
       end
@@ -29,7 +29,7 @@ module Dalli
       values
     end
 
-    def get(key)
+    def get(key, options = nil)
       if @expiries[key].nil? || @expiries[key] > Time.now.to_i
         return @data[key]
       else
